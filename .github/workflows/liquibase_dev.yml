@@ -1,0 +1,76 @@
+name: Liquibase MySQL Workflow
+
+on:
+  push:
+    branches:
+      - main  ## Adjust this branch name to match your main branch
+  pull_request:
+
+jobs:
+  liquibase-mysql:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:latest
+        env:
+          MYSQL_ROOT_PASSWORD: Pradee@32  # Replace with your MySQL root password
+          MYSQL_DATABASE: liquibase     # Replace with your desired database name
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          #maven-version: '3.8.4'
+          distribution: adopt
+          
+      - name: Install MySQL Connector/J
+        run: |
+          wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-8.0.26.tar.gz
+          tar -xzf mysql-connector-java-8.0.26.tar.gz
+          mkdir -p $HOME/.m2/repository/mysql/mysql-connector-java/8.0.26
+          mv mysql-connector-java-8.0.26/mysql-connector-java-8.0.26.jar $HOME/.m2/repository/mysql/mysql-connector-java/8.0.26/mysql-connector-java.jar
+
+      - name: Download and extract Liquibase
+        run: |
+         wget https://github.com/liquibase/liquibase/releases/latest/download/liquibase-4.23.0.tar.gz
+         tar -xzf liquibase-4.23.0.tar.gz -C /tmp
+         mkdir -p /usr/local/bin/internal/lib/
+         sudo mv /tmp/liquibase /usr/local/bin/
+         sudo mv /tmp/internal/lib/liquibase-core.jar /usr/local/bin/internal/lib/
+         #chmod +x liquibase
+  
+     # - name: Move Liquibase to /usr/local/bin/
+      #  run: |
+        # mkdir -p /usr/local/bin/internal/lib/
+       #  sudo mv liquibase /usr/local/bin/
+       #  mv liquibase-4.23.0/liquibase-4.23.0.jar /usr/local/bin/internal/lib/
+       
+       #  sudo cp liquibase-core.jar /usr/local/bin/internal/lib/liquibase-core.jar
+      # - name: Move Liquibase to /usr/local/bin/
+      #  run: sudo mv https://github.com/liquibase/liquibase/releases/download/v4.23.0/liquibase-core-4.23.0.jar /usr/local/bin/liquibase-core-4.23.0.jar
+
+      - name: Set LIQUIBASE_HOME environment variable
+        run: echo "export LIQUIBASE_HOME=/usr/local/bin/" >> $GITHUB_ENV
+     
+      - name: Run Liquibase Update
+        run: |
+          JAVA_HOME=/opt/hostedtoolcache/Java_Adopt_jdk/11.0.20-8/x64
+          chmod +x /usr/local/bin/internal/lib/liquibase-core.jar
+          #ls $LIQUIBASE_HOME
+          #ls /usr/local/bin/internal/lib/
+          
+          #java -classpath $LIQUIBASE_HOME/internal/lib/liquibase-core.jar:$HOME/.m2/repository/mysql/mysql-connector-java/8.0.26/mysql-connector-java.jar
+          
+          CLASSPATH=$LIQUIBASE_HOME/internal/lib/liquibase-core.jar:"C:\Program Files\liquibase\internal\lib\liquibase-core.jar":$HOME/.m2/repository/mysql/mysql-connector-java/8.0.26/mysql-connector-java.jar
+          java -jar "$LIQUIBASE_HOME/internal/lib/liquibase-core.jar" --changeLogFile=yourchangelog.xml --url="jdbc:mysql://127.0.0.1:3306/liquibase" --username=root --password=Kanini@81 --driver=com.mysql.cj.jdbc.Driver update     
+          #liquibase --changeLogFile=yourchangelog.xml --url="jdbc:mysql://127.0.0.1:3306/liquibase" --username=root --password=Kanini@81 --driver=com.mysql.cj.jdbc.Driver update
+
+

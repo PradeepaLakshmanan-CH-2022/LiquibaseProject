@@ -1,0 +1,38 @@
+name: Liquibase CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main  # Change this to your main branch name
+
+jobs:
+  liquibase:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+     # - name: Set up Java
+      #  uses: actions/setup-java@v3
+       # with:
+         # java-version: '17'  # Change this to the required Java version for Liquibase
+        #  distribution: adopt
+      - name: Set up MySQL
+        run: |
+          sudo /etc/init.d/mysql start
+          #mysql -e 'CREATE DATABASE ${{ env.MYSQL_DATABASE }} -u${{ env.MYSQL_USER }} -p${{ env.MYSQL_PASSWORD }}'
+      - name: Install Liquibase
+        uses: docker://liquibase/liquibase:latest
+        with:
+         args: --url="jdbc:mysql://127.0.0.1:3306/liquibase" --changeLogFile=yourchangelog.xml --username=root --password=Kanini@81 status --verbose
+
+      - name: Apply Database Changes
+        env:
+          LIQUIBASE_CHANGELOG_FILE: "yourchangelog.xml"  # Change this to the actual path of your Liquibase changelog file
+          DB_HOST: "mysql://127.0.0.1"                        # Replace with your MySQL host address
+          DB_PORT: "3306"                        # Replace with your MySQL port number
+          DB_NAME: "liquibase"                     # Replace with your MySQL database name
+          DB_USER: "root"                    # Replace with your MySQL username
+          DB_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}        # Replace with your MySQL password stored in GitHub Secrets
+        run: |
+          liquibase --changeLogFile=yourchangelog.xml --url="jdbc:mysql://127.0.0.1:3306/liquibase" --username=${DB_USER} --password=${DB_PASSWORD} update

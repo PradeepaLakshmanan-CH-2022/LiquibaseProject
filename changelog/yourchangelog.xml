@@ -1,0 +1,24 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <include file="./master.xml"/>
+    <changeSet author="Sudhakar.Subramanian (generated)" id="1689248749665-1">
+        <createTable tableName="userdetail3">
+            <column name="UserId" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="UserName" type="VARCHAR(45)"/>
+            <column name="Gender" type="VARCHAR(10)"/>
+            <column name="Test" type="VARCHAR(10)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Sudhakar.Subramanian (generated)" id="1689248749665-2">
+        <createTable tableName="userdetail4">
+            <column name="UserId" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="UserName" type="VARCHAR(45)"/>
+            <column name="Gender" type="VARCHAR(10)"/>
+            <column name="Test" type="VARCHAR(10)"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

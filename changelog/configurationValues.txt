@@ -1,0 +1,7 @@
+# Set these values in CI/CD configuration to connect to mysql and run example
+
+logLevel: info
+changeLogFile: samplechangelog.sql
+url: jdbc:mysql://127.0.0.1:3306/liquibase
+username: root
+password: Kanini@81

@@ -1,0 +1,39 @@
+name: Liquibase CI
+run-name: Setting up Liquibase CI
+#
+on: [push]
+jobs:
+  test-output:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Test Output
+      run: echo "Here is a test1"
+  connect-remote:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: docker://liquibase/liquibase:latest
+    - uses: apt install mysql-client:latest -y
+      with:
+        operation: 'update'
+        classpath: 'changelog'
+        changelogfile: 'changelog/yourchangelog.xml'
+        username: 'root'
+        password: 'Kanini@81'
+        url: 'jdbc:mysql://127.0.0.1:3306/liquibase'
+
+ 
+
+   # steps:
+    #- uses: actions/checkout@v2
+    #- uses: liquibase/liquibase-github-action@v1
+    #- name: Run 'Liquibase update' in a Docker Container
+    #  uses: docker://liquibase/liquibase:latest
+    #  with:
+    #    args: --url=jdbc:mysql://127.0.0.1:3306/liquibase --changeLogFile=./changelog/yourchangeLog.xml --username=root --password=Kanini@81 --logLevel=debug update
+
+ 
+
+   # - uses: actions/checkout@v3
+   # - name: liquibase update
+   ##   run: mysql -h 127.0.0.1 --port 3306 -uroot -pKanini@81 -e "liquibase update";

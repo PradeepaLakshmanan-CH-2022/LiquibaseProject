@@ -1,0 +1,51 @@
+name: Liquibase Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build Liquibase
+        run: |
+          curl -L -o liquibase-${{ env.LIQUIBASE_VERSION }}.tar.gz "https://github.com/liquibase/liquibase/releases/download/v${{ env.LIQUIBASE_VERSION }}/liquibase-${{ env.LIQUIBASE_VERSION }}.tar.gz"
+          tar -xzf liquibase-${{ env.LIQUIBASE_VERSION }}.tar.gz
+          chmod +x liquibase
+
+      - name: Upload Liquibase artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: liquibase
+          path: liquibase
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Download Liquibase artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: liquibase
+
+      - name: Set up Liquibase path
+        run: |
+          export PATH=$(pwd)/liquibase:$PATH
+
+      - name: Show Liquibase version
+        run: liquibase --version
+
+      # Add your release commands here
+      # Example: 
+      # - name: Run Liquibase update
+      #   run: liquibase update

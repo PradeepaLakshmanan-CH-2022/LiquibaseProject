@@ -1,0 +1,31 @@
+stages:
+  - build
+  - release
+
+# Define the job for building Liquibase
+build:
+  stage: build
+  image: openjdk:11
+  variables:
+    LIQUIBASE_VERSION: "4.5.1"  # Specify the Liquibase version you want to build
+  script:
+    - curl -L -o liquibase-${LIQUIBASE_VERSION}.tar.gz "https://github.com/s.sudhakar.mail/liquibasepoc/v${LIQUIBASE_VERSION}/liquibasepoc-${LIQUIBASE_VERSION}.tar.gz"
+    - tar -xzf liquibasepoc-${LIQUIBASE_VERSION}.tar.gz
+    - chmod +x liquibasepoc
+  artifacts:
+    paths:
+      - liquibasepoc
+
+# Define the job for releasing Liquibase
+release:
+  stage: release
+  image: openjdk:11
+  dependencies:
+    - build
+  script:
+    - export PATH=$(pwd)/liquibasepoc:$PATH
+    - liquibase --version
+    # Add your release commands here
+    # Example: liquibase update
+
+# Define additional stages and jobs as needed for testing, deployment, etc.
