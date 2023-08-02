@@ -71,6 +71,6 @@ jobs:
           
           CLASSPATH=$LIQUIBASE_HOME/internal/lib/liquibase-core.jar:"C:\Program Files\liquibase\internal\lib\liquibase-core.jar":$HOME/.m2/repository/mysql/mysql-connector-java/8.0.26/mysql-connector-java.jar
           java -jar "$LIQUIBASE_HOME/internal/lib/liquibase-core.jar" --changeLogFile=yourchangelog.xml --url="jdbc:mysql://127.0.0.1:3306/liquibase" --username=root --password=Kanini@81 --driver=com.mysql.cj.jdbc.Driver update     
-          #liquibase --changeLogFile=yourchangelog.xml --url="jdbc:mysql://127.0.0.1:3306/liquibase" --username=root --password=Kanini@81 --driver=com.mysql.cj.jdbc.Driver update
+          #liquibase --changeLogFile=yourchangelog.xml --url="jdbc:mysql://127.0.0.1:3306/liquibase" --username=root --password=Pradee@32 --driver=com.mysql.cj.jdbc.Driver update
 
 
